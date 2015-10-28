@@ -1,33 +1,18 @@
 import scala.util.Random
 
 /**
- * Created by shivangi on 10/16/15.
+ * Created by shivangi on 10/28/15.
  */
-class Customer(name: String, add: String) extends User(name,add ) {
+class Customer(name:String, address:String, id:String) {
 
-  val shoppingCart = new ShoppingCart((Random.nextInt(100)).toString().concat(getName()))
-
-  def addItemToCart(name:String,qty :Int) = shoppingCart.addToList(name,qty)
-
-  def deleteItemFromCart(itemName:String, qty:Int) = {
-    val availableQty = shoppingCart.getItemQty(itemName)
-    if(qty <= availableQty)
-      shoppingCart.removeFromList(itemName,qty)
-    else println(getName()," ordered ",qty,"but only ",availableQty,"pieces available.")
+  def this(name:String, address:String){
+    this((Random.nextInt(1000)).toString().concat(name).concat((Random.nextInt(1000)).toString()), name, address)
   }
 
-  def viewMenu()={
-    for ((key,value)<-InMemoryManager.inventoryList){
-      println(key, value.toString)
-    }
-  }
+  def getId() = this.id
 
-  def viewCart()={
-    print(getName()+"'s cart contains the following items")
-    for ((key,value) <-shoppingCart.getItemList())
-      println(key,value)
-  }
+  def getName() = this.name
 
-  def noOfItemsInCart():Int=shoppingCart.getNoOfItemsInCart()
+  def getAdd() = this.address
 
 }

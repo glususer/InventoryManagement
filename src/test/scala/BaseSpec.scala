@@ -5,6 +5,9 @@ import org.scalatest.{FlatSpec, Matchers}
  */
 class BaseSpec extends FlatSpec with Matchers{
 
+//  val manager:InventoryManager = DBManager.getManager()
+  val manager:InventoryManager = InMemoryManager
+
   val customerA = new Customer("customerA", "123, downtown")
   val customerB = new Customer("customerB", "456 new jersey")
   val customerC = new Customer("customerC", "19/876, Andheri east")

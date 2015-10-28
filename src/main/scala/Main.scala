@@ -1,3 +1,5 @@
+import java.sql.Connection
+
 /**
  * Created by shivangi on 10/21/15.
  */
@@ -19,7 +21,6 @@ class run() {
   val sellerD = new Seller("sellerD", "12-14H BANJARA HILLS, Hyderabad")
   val sellerE = new Seller("sellerE", "14B, Chowranghee lane, Kolkatta")
   val sellerF = new Seller("sellerF", "29B/41C ville parle")
-
   sellerA.addItemToInventory("mobile", 14000, 2)
   sellerB.addItemToInventory("shoes", 300, 56)
   sellerC.addItemToInventory("golf equipment", 4000, 20)
@@ -29,18 +30,39 @@ class run() {
   sellerA.addItemToInventory("golf equipment", 4000, 51)
   sellerB.addItemToInventory("locks", 30, 3000)
 
-  customerA.viewMenu()
+  /*customerA.viewMenu()
   customerA.addItemToCart("mobile", 1)
   customerA.addItemToCart("locks", 10)
   customerA.addItemToCart("golf equipment", 3)
   customerA.addItemToCart("mobile", 1)
-  customerA.viewCart()
+  customerA.getShoppingCart()
 
   customerD.addItemToCart("shoes", 2)
   customerD.viewCart()
+  customerA.getShoppingCart()
+
 
   customerC.addItemToCart("mobile", 3)
   customerC.viewCart()
+  customerA.getShoppingCart()*/
 
+  var connection: Connection = null
+  try {
+    // make the connection
 
+    connection = DBConnection.getConnection
+
+    // create the statement, and run the select query
+    val statement = connection.createStatement()
+      val resultSet = statement.executeQuery("SELECT name, address FROM Customer")
+    while (resultSet.next()) {
+      val host = resultSet.getString("name")
+      val user = resultSet.getString("address")
+      println("name, address = " + host + ", " + user)
+    }
+  } catch {
+    case e => e.printStackTrace
+  }
+  connection.close()
 }
+

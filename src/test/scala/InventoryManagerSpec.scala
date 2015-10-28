@@ -15,7 +15,7 @@ class InventoryManagerSpec extends BaseSpec{
     sellerA.addItemToInventory("golf equipment",4000,51)
     sellerB.addItemToInventory("locks", 30, 3000)
   }
-  it should "create cart for customer and add items to cart" in {
+  /*it should "create cart for customer and add items to cart" in {
     customerA.addItemToCart("mobile",1)
     customerA.addItemToCart("locks",10)
     customerA.addItemToCart("golf equipment",3)
@@ -29,7 +29,7 @@ class InventoryManagerSpec extends BaseSpec{
   }
   it should " Not add 3 mobile to customer C's cart as there are only 4 mobile available out of which 2 are in A's cart" in {
     customerC.addItemToCart("mobile",3)
-  }
+  }*/
 
 
 }
