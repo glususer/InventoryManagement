@@ -1,3 +1,5 @@
+package vo
+
 /**
  * Created by shivangi on 10/16/15.
  */
@@ -19,7 +21,7 @@ class Item(name:String, price: Int, code:String) {
 
   def addSellerToList(sellerName:String)= sellerList:::List(sellerName)
 
-  override def toString = s"Item(code: $getCode, price: $getPrice, name: $getName,quantity: $getQty)"
+  override def toString = s"vo.Item(code: $getCode, price: $getPrice, name: $getName,quantity: $getQty)"
 
 }
 

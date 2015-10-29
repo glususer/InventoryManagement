@@ -1,5 +1,8 @@
 import java.sql.Connection
 
+import dao.DBConnection
+import vo.{Seller, Customer}
+
 /**
  * Created by shivangi on 10/21/15.
  */
@@ -61,7 +64,8 @@ class run() {
       println("name, address = " + host + ", " + user)
     }
   } catch {
-    case e => e.printStackTrace
+    case e :Exception=> println(e.getMessage)
+      throw e
   }
   connection.close()
 }

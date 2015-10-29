@@ -1,15 +1,18 @@
+import manager.InMemoryManager
+import vo.Customer
+
 import scala.util.Random
 
 /**
  * Created by shivangi on 10/16/15.
  */
-class InMemoryCustomerOperation(customer: Customer)  {
+class InMemoryCustomerOperation(customer: Customer) extends CustomerOperation {
 
-  val shoppingCart = new ImMemoryShoppingCart((Random.nextInt(100)).toString().concat(customer.getName()))
+  val shoppingCart = new InMemoryShoppingCart((Random.nextInt(100)).toString().concat(customer.getName()),customer)
 
-  def addItemToCart(name: String, qty: Int) = shoppingCart.addToList(name, qty)
+  override def addItemToCart(name: String, qty: Int) = shoppingCart.addToList(name, qty)
 
-  def deleteItemFromCart(itemName: String, qty: Int) = {
+  override def deleteItemFromCart(itemName: String, qty: Int) = {
     val availableQty = shoppingCart.getItemQty(itemName)
     if (qty <= availableQty)
       shoppingCart.removeFromList(itemName, qty)
@@ -18,13 +21,13 @@ class InMemoryCustomerOperation(customer: Customer)  {
 
 
 
-  def viewMenu() = {
+  override def viewMenu() = {
     for ((key, value) <- InMemoryManager.inventoryList) {
       println(key, value.toString)
     }
   }
 
-  def viewCart() = {
+  override def viewCart() = {
     if(shoppingCart.isEmpty())
        print(customer.getName() + "'s cart is empty")
     else {
@@ -34,7 +37,5 @@ class InMemoryCustomerOperation(customer: Customer)  {
     }
   }
 
-  def getShoppingCart():String = shoppingCart.toString
-
-  def noOfItemsInCart(): Int = shoppingCart.getNoOfItemsInCart()
+  override def noOfItemsInCart(): Int = shoppingCart.getNoOfItemsInCart()
 }

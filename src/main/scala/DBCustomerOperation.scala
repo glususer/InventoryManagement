@@ -4,31 +4,38 @@
 
 import java.sql.{SQLException, ResultSet, PreparedStatement, Connection}
 
+import dao.CustomerDao
+import manager.DBManager
+import vo.Customer
+
 import scala.util.Random
 import scala.util.control.Exception
+import collection.JavaConversions._
 
-class DBCustomerOperation(customer:Customer) {
 
-  val customerDao = new CustomerDao
-  val shoppingCart = new DBShoppingCart((Random.nextInt(100)).toString().concat(customer.getName()))
+
+class DBCustomerOperation(customer:Customer) extends CustomerOperation {
+
+  private val customerDao = new CustomerDao
+  private val shoppingCart = new DBShoppingCart((Random.nextInt(100)).toString().concat(customer.getName()),customer)
   customerDao.insertCustomerDetails(customer)
 
-  def addItemToCart(itemName: String, qty: Int) = shoppingCart.addToList(itemName, qty)
+  override def addItemToCart(itemName: String, qty: Int) = shoppingCart.addToList(itemName, qty)
 
-  def deleteItemFromCart(itemName: String, qty: Int) = {
+  override def deleteItemFromCart(itemName: String, qty: Int) = {
     val availableQty = shoppingCart.getItemQty(itemName)
     if (qty <= availableQty)
       shoppingCart.removeFromList(itemName, qty)
     else throw new NoSuchElementException("Only" + availableQty + "items can be deleted")
   }
 
-  def viewMenu() = {
+  override def viewMenu() = {
     for ((key, value) <- DBManager.inventoryList) {
       println(key, value.toString)
     }
   }
 
-  def viewCart() = {
+  override def viewCart() = {
     if (shoppingCart.isEmpty())
       print(customer.getName() + "'s cart is empty")
     else {
@@ -38,5 +45,5 @@ class DBCustomerOperation(customer:Customer) {
     }
   }
 
-  def noOfItemsInCart(): Int = shoppingCart.getNoOfItemsInCart()
+  override def noOfItemsInCart(): Int = shoppingCart.getNoOfItemsInCart()
 }

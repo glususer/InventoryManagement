@@ -1,11 +1,13 @@
+import manager.{InventoryManager, InMemoryManager}
 import org.scalatest.{FlatSpec, Matchers}
+import vo.{Seller, Customer}
 
 /**
  * Created by shivangi on 10/23/15.
  */
 class BaseSpec extends FlatSpec with Matchers{
 
-//  val manager:InventoryManager = DBManager.getManager()
+//  val manager:manager.InventoryManager = DBManager.getManager()
   val manager:InventoryManager = InMemoryManager
 
   val customerA = new Customer("customerA", "123, downtown")

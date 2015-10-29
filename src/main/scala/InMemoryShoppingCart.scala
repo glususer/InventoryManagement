@@ -2,29 +2,32 @@
  * Created by shivangi on 10/16/15.
  */
 
+import manager.InMemoryManager
+import vo.Customer
+
 import scala.collection.mutable.Map
 
-class ImMemoryShoppingCart(id: String) {
+class InMemoryShoppingCart(id: String,customer:Customer) extends ShoppingCart{
 
-  var itemMap: Map[String, Int] = Map()
+  private var itemMap: Map[String, Int] = Map()
 
-  def isEmpty(): Boolean = (itemMap.isEmpty)
+  override def isEmpty(): Boolean = (itemMap.isEmpty)
 
-  def getId() = this.id
+  override def getId():String = this.id
 
-  def getItemList() = this.itemMap
+  override def getItemList():Map[String,Int] = this.itemMap
 
-  def getNoOfItemsInCart(): Int = {
+  override def getNoOfItemsInCart(): Int = {
     var noOfItems = 0
     for ((key, value) <- itemMap)
       noOfItems += value
     noOfItems
   }
 
-  def getItemQty(itemName: String): Int = itemMap(itemName)
+  override def getItemQty(itemName: String): Int = itemMap(itemName)
 
 
-  def addToList(itemName: String, qty: Int) = {
+  override def addToList(itemName: String, qty: Int) = {
     if (InMemoryManager.isItemAvailable(itemName, qty)) {
       val itemQtyAlreadyPresent = itemMap.get(itemName)
       itemQtyAlreadyPresent match {
@@ -36,7 +39,7 @@ class ImMemoryShoppingCart(id: String) {
     else throw new NoSuchElementException( "Ordered "+ qty + " pieces but only " + InMemoryManager.inventoryList(itemName).getQty() + " pieces are available")
   }
 
-  def removeFromList(itemName: String, qty: Int) = {
+  override def removeFromList(itemName: String, qty: Int) = {
     itemMap -= (itemName)
     InMemoryManager.addToInventoryAfterCancellation(itemName, qty)
     this.itemMap -= (itemName)

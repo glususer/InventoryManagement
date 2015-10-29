@@ -1,3 +1,5 @@
+package vo
+
 import scala.util.Random
 
 /**

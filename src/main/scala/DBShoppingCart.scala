@@ -1,43 +1,45 @@
+import dao.CustomerItemDao
+import manager.DBManager
+import vo.Customer
+
 import scala.collection.mutable.Map
 import scala.util.Random
 
 /**
  * Created by shivangi on 10/28/15.
  */
-class DBShoppingCart(id: String) {
-  val customerDao = new CustomerDao()
-  val customerItemDao = new CustomerItemDao()
-  val inventoryListDao = new InventoryListDao()
+class DBShoppingCart(id: String, customer:Customer) extends ShoppingCart{
+  private val customerItemDao = new CustomerItemDao()
 
-  var itemMap: Map[String, Int] = Map()
+  private var itemMap: Map[String, Int] = Map()
 
-  def isEmpty(): Boolean = (itemMap.isEmpty)
+  override def isEmpty(): Boolean = (itemMap.isEmpty)
 
-  def getId() = this.id
+  override def getId= this.id
 
-  def getItemList() = this.itemMap
+  override def getItemList() = this.itemMap
 
-  def getNoOfItemsInCart(): Int = {
+  override def getNoOfItemsInCart(): Int = {
     var noOfItems = 0
     for ((key, value) <- itemMap)
       noOfItems += value
     noOfItems
   }
 
-  def getItemQty(itemName: String): Int = itemMap(itemName)
+  override def getItemQty(itemName: String): Int = itemMap(itemName)
 
 
-  def addToList(itemName: String, qty: Int) = {
+  override def addToList(itemName: String, qty: Int) = {
     if (DBManager.isItemAvailable(itemName, qty)) {
       val itemQtyAlreadyPresent = itemMap.get(itemName)
       itemQtyAlreadyPresent match {
         case Some(itemQtyAlreadyPresent) => {
           itemMap += ((itemName) -> (qty + itemQtyAlreadyPresent))
-          customerItemDao.increaseQty(customerDao.getCustomerIdByName(), inventoryListDao.getItemCodeByName(itemName), qty + itemQtyAlreadyPresent)
+          customerItemDao.increaseQty(customer.getName(), itemName, qty + itemQtyAlreadyPresent)
         }
         case None => {
           itemMap += ((itemName) -> qty)
-          customerItemDao.addItem(customerDao.getCustomerIdByName(), inventoryListDao.getItemCodeByName(itemName), qty)
+          customerItemDao.addItem(customer.getName(), itemName.concat("_").concat((Random.nextInt(1000)).toString()),itemName, qty)
         }
       }
       DBManager.getItem(itemName, qty)
@@ -45,7 +47,7 @@ class DBShoppingCart(id: String) {
     else throw new NoSuchElementException( "Ordered "+ qty + " pieces but only " + DBManager.inventoryList(itemName).getQty() + " pieces are available")
   }
 
-  def removeFromList(itemName: String, qty: Int) = {
+  override def removeFromList(itemName: String, qty: Int) = {
     itemMap -= (itemName)
     DBManager.addToInventoryAfterCancellation(itemName, qty)
   }

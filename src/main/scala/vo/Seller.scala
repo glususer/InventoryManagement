@@ -1,3 +1,7 @@
+package vo
+
+import manager.InMemoryManager
+
 import scala.util.Random
 
 /**

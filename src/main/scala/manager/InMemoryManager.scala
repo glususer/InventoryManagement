@@ -1,3 +1,7 @@
+package manager
+
+import vo.Item
+
 import scala.collection.mutable.Map
 import scala.util.Random
 

@@ -23,7 +23,7 @@ class InventoryManagerSpec extends BaseSpec{
     customerD.addItemToCart("shoes",2)
   }
 
-  it should "Customer A's cart should have 15 items and Customer D's cart should have 2 items" in {
+  it should "vo.Customer A's cart should have 15 items and vo.Customer D's cart should have 2 items" in {
     assert(customerA.noOfItemsInCart()==15)
     assert(customerD.noOfItemsInCart() == 2)
   }
