@@ -24,14 +24,14 @@ class run() {
   val sellerD = new Seller("sellerD", "12-14H BANJARA HILLS, Hyderabad")
   val sellerE = new Seller("sellerE", "14B, Chowranghee lane, Kolkatta")
   val sellerF = new Seller("sellerF", "29B/41C ville parle")
-  sellerA.addItemToInventory("mobile", 14000, 2)
+  /*sellerA.addItemToInventory("mobile", 14000, 2)
   sellerB.addItemToInventory("shoes", 300, 56)
   sellerC.addItemToInventory("golf equipment", 4000, 20)
   sellerC.addItemToInventory("locks", 30, 2896)
 
   sellerD.addItemToInventory("mobile", 14000, 2)
   sellerA.addItemToInventory("golf equipment", 4000, 51)
-  sellerB.addItemToInventory("locks", 30, 3000)
+  sellerB.addItemToInventory("locks", 30, 3000)*/
 
   /*customerA.viewMenu()
   customerA.addItemToCart("mobile", 1)

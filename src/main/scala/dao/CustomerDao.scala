@@ -7,31 +7,10 @@ import vo.Customer
 /**
  * Created by shivangi on 10/28/15.
  */
-class CustomerDao {
+class CustomerDao extends  Dao{
 
-  val connection = getConnection()
   val selectCustomer = "SELECT id, name, address FROM vo.Customer where name=?"
   val createCustomer = "INSERT INTO vo.Customer (id, name, address) values (?,?,?)  "
-  var preparedStatement: PreparedStatement = null
-
-  def cleanUp(connection: Connection, preparedStatement: PreparedStatement) = {
-    connection.close()
-    preparedStatement.close()
-  }
-
-  def getConnection(): Connection = {
-    var connection: Connection = null
-    try {
-      connection = DBConnection.getConnection
-
-    } catch {
-      case e:Exception => {
-        println(e.getMessage())
-        throw e
-      }
-    }
-    connection
-  }
 
   def insertCustomerDetails(customer: Customer) = {
     try {

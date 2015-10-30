@@ -21,11 +21,4 @@ class Seller(name: String, add: String)  {
 
   def getAdd() = this.add
 
-  def addItemToInventory(itemName: String, price: Int, qty: Int) = {
-    InMemoryManager.addToInventory(itemName, price, qty, this.name)
-
-  }
-
-  def removeItemFromInventory(itemName: String, qty: Int) = InMemoryManager.removeFromInventory(itemName, qty)
-
 }

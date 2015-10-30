@@ -1,29 +1,24 @@
 package dao
 
-import java.sql.{Connection, PreparedStatement}
+import java.sql.{ResultSet, Connection, PreparedStatement}
+
+import scala.collection.mutable
+import scala.collection.mutable.Map
 
 /**
  * Created by shivangi on 10/28/15.
  */
-class CustomerItemDao {
+class CustomerItemDao extends Dao{
+
+
+  def getQtyForItem(s: String, itemName: String):Int = {
+    0
+  }
+
 
   val increaseItemQty ="UPDATE CustomerItem SET Quantity=? WHERE CustomerName=? AND ItemName=?"
   val insertCustomerItem = "INSERT INTO CustomerItem (CustomerName, ItemName, ItemCode, Quantity) values (?,?,?,?)"
-  var preparedStatement: PreparedStatement = null
-  val connection:Connection = getConnection()
-
-
-  def getConnection(): Connection = {
-    var connection: Connection = null
-    try {
-      connection = DBConnection.getConnection
-
-    } catch {
-      case e:Exception   => println(e.getMessage)
-        throw e
-    }
-    connection
-  }
+  val getItemsForByCustomerName ="SELECT ItemName, Quantity WHERE CustomerName=?"
 
   def increaseQty(customerName:String, itemName:String, updatedQty:Int) = {
     try {
@@ -63,9 +58,24 @@ class CustomerItemDao {
       cleanUp(connection, preparedStatement)
     }
   }
-  def cleanUp(connection: Connection, preparedStatement: PreparedStatement) = {
-    connection.close()
-    preparedStatement.close()
-  }
 
+  def getItemsForCustomer(customerName: String):Map[String, Int] = {
+    try {
+      preparedStatement = connection.prepareStatement(getItemsForByCustomerName)
+      preparedStatement.setString(1, customerName)
+      val resultSet:ResultSet=  preparedStatement.executeQuery()
+      var itemMap: Map[String, Int]= Map()
+      while (resultSet.next()) {
+        itemMap += resultSet.getString("ItemName")->resultSet.getInt("Quantity")
+      }
+      itemMap
+    }
+    catch {
+      case e:Exception => println(e.getMessage)
+        throw e
+    }
+    finally {
+      cleanUp(connection, preparedStatement)
+    }
+  }
 }
