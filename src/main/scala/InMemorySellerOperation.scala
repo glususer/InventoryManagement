@@ -11,8 +11,7 @@ class InMemorySellerOperation(seller:Seller) extends  SellerOperation{
   }
 
   def removeItemFromInventory(itemName: String, qty: Int) = {
-    if(InMemoryManager.getItem(itemName,qty).sellerList.contains(seller.getName()))
+    if(InMemoryManager.isQtyForItemAvailable(itemName,qty) && InMemoryManager.isSellerPresentForItem(itemName,seller.getName()))
       InMemoryManager.removeFromInventory(itemName, qty)
   }
-
 }

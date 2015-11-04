@@ -9,16 +9,29 @@ import scala.collection.mutable.Map
  * Created by shivangi on 10/28/15.
  */
 class CustomerItemDao extends Dao{
+  private val getQtyForItem="SELECT QUANTITY FROM CustomerItem WHERE CustomerName=? AND ItemName=?"
+  private val increaseItemQty ="UPDATE CustomerItem SET Quantity=? WHERE CustomerName=? AND ItemName=?"
+  private val insertCustomerItem = "INSERT INTO CustomerItem (CustomerName, ItemName, ItemCode, Quantity) values (?,?,?,?)"
+  private val getItemsForByCustomerName ="SELECT ItemName , Quantity FROM CustomerItem WHERE CustomerName=?"
 
+  def getQtyForItem(customerName: String, itemName: String):Int = {
+    try {
+      preparedStatement = connection.prepareStatement(getQtyForItem)
+      preparedStatement.setString(1, customerName)
+      preparedStatement.setString(2, itemName)
 
-  def getQtyForItem(s: String, itemName: String):Int = {
-    0
+      val resultSet:ResultSet=  preparedStatement.executeQuery()
+      while (resultSet.next()) {
+        val qty = resultSet.getInt("Quantity")
+        return qty
+      }
+      0
+    }
+    catch {
+      case e:Exception => println(e.getMessage)
+        throw e
+    }
   }
-
-
-  val increaseItemQty ="UPDATE CustomerItem SET Quantity=? WHERE CustomerName=? AND ItemName=?"
-  val insertCustomerItem = "INSERT INTO CustomerItem (CustomerName, ItemName, ItemCode, Quantity) values (?,?,?,?)"
-  val getItemsForByCustomerName ="SELECT ItemName, Quantity WHERE CustomerName=?"
 
   def increaseQty(customerName:String, itemName:String, updatedQty:Int) = {
     try {
@@ -32,10 +45,10 @@ class CustomerItemDao extends Dao{
       case e:Exception => println(e.getMessage)
         throw e
     }
-
+/*
     finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
 
   }
   def addItem(customerName:String,itemCode:String, itemName:String, qty:Int) = {
@@ -54,9 +67,9 @@ class CustomerItemDao extends Dao{
         throw e
 
     }
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
   }
 
   def getItemsForCustomer(customerName: String):Map[String, Int] = {
@@ -74,8 +87,8 @@ class CustomerItemDao extends Dao{
       case e:Exception => println(e.getMessage)
         throw e
     }
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
   }
 }

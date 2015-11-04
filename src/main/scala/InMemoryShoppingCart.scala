@@ -28,7 +28,7 @@ class InMemoryShoppingCart(id: String,customer:Customer) extends ShoppingCart{
 
 
   override def addToList(itemName: String, qty: Int) = {
-    if (InMemoryManager.isItemAvailable(itemName, qty)) {
+    if (InMemoryManager.isQtyForItemAvailable(itemName, qty)) {
       val itemQtyAlreadyPresent = itemMap.get(itemName)
       itemQtyAlreadyPresent match {
         case Some(itemQtyAlreadyPresent) => itemMap += ((itemName) -> (qty + itemQtyAlreadyPresent))
@@ -36,7 +36,7 @@ class InMemoryShoppingCart(id: String,customer:Customer) extends ShoppingCart{
       }
       InMemoryManager.getItem(itemName, qty)
     }
-    else throw new NoSuchElementException( "Ordered "+ qty + " pieces but only " + InMemoryManager.inventoryList(itemName).getQty() + " pieces are available")
+    else println( "Ordered "+ qty + " pieces but only " + InMemoryManager.inventoryList(itemName).getQty() + " pieces are available")
   }
 
   override def removeFromList(itemName: String, qty: Int) = {

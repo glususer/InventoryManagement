@@ -15,8 +15,11 @@ object DBManager extends InventoryManager {
 
   val sellerItemDao = new SellerItemDao
 
-  var inventoryList:Map[String,Item] = {
-    for((key,value) <-InventoryDao.getInventoryList()){
+  var inventoryList: Map[String, Item] = getInventoryList()
+
+  private def getInventoryList(): Map[String, Item] = {
+    inventoryList = InventoryDao.getInventoryList()
+    for ((key, value) <- inventoryList) {
       value.setSellerList(sellerItemDao.getSellerListForItem(key))
     }
     inventoryList
@@ -27,34 +30,40 @@ object DBManager extends InventoryManager {
   private def isPresent(itemName: String): Boolean = InventoryDao.isPresent(itemName)
 
   override def addToInventory(itemName: String, price: Int, qty: Int, sellerName: String) = {
-    if (isItemAvailable(itemName, qty)) {
+    if (InventoryDao.isPresent(itemName)) {
       val item = InventoryDao.getItem(itemName)
-      InventoryDao.increaseItemQty(item.getName(),item.getQty() + qty)
-      if(sellerItemDao.isNewSeller())
-        sellerItemDao.addSeller(sellerName, itemName, item.getCode())
+      InventoryDao.updateItemQty(itemName, item.getQty() + qty)
+      if (!sellerItemDao.isSellerPresentForItem(sellerName, itemName))
+        sellerItemDao.addSeller(sellerName, itemName, item.getCode(), qty)
     }
     else {
       val code = createCode(itemName)
-      InventoryDao.addToInventory(itemName,code,price,qty)
-      sellerItemDao.addSeller(sellerName, itemName, code)
+      InventoryDao.addToInventory(itemName, code, price, qty)
+      sellerItemDao.addSeller(sellerName, itemName, code, qty)
     }
   }
 
-  override def isItemAvailable(name: String, qty: Int): Boolean = InventoryDao.isItemAvailable(name,qty)
+  override def isQtyForItemAvailable(name: String, qty: Int): Boolean = InventoryDao.isQtyForItemAvailable(name, qty)
 
-  override def addToInventoryAfterCancellation(itemName: String, qty: Int)= {
+  override def addToInventoryAfterCancellation(itemName: String, qty: Int) = {
     if (isPresent(itemName)) {
       val item = InventoryDao.getItem(itemName)
-      InventoryDao.increaseItemQty(item.getName(),item.getQty() + qty)
+      InventoryDao.updateItemQty(item.getName(), item.getQty() + qty)
     }
   }
 
   override def getItem(name: String, requiredQty: Int): Item = {
-    InventoryDao.decreaseItemQty(InventoryDao.getQtyForItem(name) - requiredQty)
+    InventoryDao.updateItemQty(name, InventoryDao.getItem(name).getQty() - requiredQty)
     val item = InventoryDao.getItem(name)
     item
-
   }
 
-  override def removeFromInventory(itemName: String, qty: Int) = InventoryDao.removeItem(itemName,qty)
+  override def removeFromInventory(itemName: String, qty: Int) = {
+    val previousQty = InventoryDao.getItem(itemName).getQty()
+    InventoryDao.updateItemQty(itemName, previousQty - qty)
+  }
+
+  override def isSellerPresentForItem(itemName: String, sellerName: String): Boolean = {
+    sellerItemDao.isSellerPresentForItem(itemName, sellerName)
+  }
 }

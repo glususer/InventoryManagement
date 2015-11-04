@@ -11,10 +11,12 @@ abstract class InventoryManager {
 
   def removeFromInventory(itemName:String, qty:Int)
 
-  def isItemAvailable(name:String, qty:Int):Boolean
+  def isQtyForItemAvailable(name:String, qty:Int):Boolean
 
   def addToInventoryAfterCancellation(itemName:String, qty:Int)
 
   def getItem(name:String, requiredQty:Int):Item
+
+  def isSellerPresentForItem(itemName:String, sellerName:String):Boolean
 
 }

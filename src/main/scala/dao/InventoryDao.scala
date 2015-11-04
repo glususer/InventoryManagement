@@ -11,40 +11,28 @@ import scala.collection.mutable.Map
  * Created by shivangi on 10/28/15.
  */
 object InventoryDao extends  Dao{
-  val incrItemQty = "UPDATE InventoryList SET Quantity=? WHERE ItemName=? "
-  val addItemToInventory = "INSERT INTO InventoryList (ItemName, ItemCode, Price,Quantity ) values (?,?,?,?)  "
-  val fetchInventoryList ="SELECT * FROM InventoryList"
 
-  def removeItem(itemName: String, qty: Int)= {
+  private val updateQtyForItem = "UPDATE InventoryList SET Quantity=? WHERE ItemName=? "
+  private val addItemToInventory = "INSERT INTO InventoryList (ItemName, ItemCode, Price,Quantity ) values (?,?,?,?)  "
+  private val fetchInventoryList ="SELECT * FROM InventoryList"
+  private val isQtyForItemAvailable = "SELECT COUNT(*) FROM InventoryList where ItemName =? AND Quantity >=?"
+  private val getItemByItemName="SELECT * FROM InventoryList WHERE itemName=?"
+  private val isItemPresent="SELECT COUNT(*) FROM InventoryList WHERE itemName=?"
+
+  def updateItemQty(itemName: String, qty: Int) = {
     try {
-      preparedStatement = connection.prepareStatement(incrItemQty);
-      preparedStatement.setString(1, itemName)
-      preparedStatement.setInt(2, qty)
+      preparedStatement = connection.prepareStatement(updateQtyForItem);
+      preparedStatement.setInt(1, qty)
+      preparedStatement.setString(2, itemName)
       preparedStatement.executeUpdate();
     }
     catch {
       case e:Exception => println(e.getMessage)
         throw e
     }
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
-  }
-
-  def increaseItemQty(itemName: String, qty: Int) = {
-    try {
-      preparedStatement = connection.prepareStatement(incrItemQty);
-      preparedStatement.setString(1, itemName)
-      preparedStatement.setInt(2, qty)
-      preparedStatement.executeUpdate();
-    }
-    catch {
-      case e:Exception => println(e.getMessage)
-        throw e
-    }
-    finally {
-      cleanUp(connection, preparedStatement)
-    }
+    }*/
   }
 
 
@@ -66,9 +54,9 @@ object InventoryDao extends  Dao{
       case e:Exception => println(e.getMessage)
         throw e
     }
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
   }
 
   def addToInventory(itemName: String, itemCode:String,price: Int, qty: Int) = {
@@ -85,33 +73,73 @@ object InventoryDao extends  Dao{
         throw e
     }
 
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
 
   }
 
-  def isItemAvailable(name: String, qty: Int): Boolean = ???
+  def isQtyForItemAvailable(name: String, qty: Int): Boolean = {
+    try {
+      preparedStatement = connection.prepareStatement(isQtyForItemAvailable)
+      preparedStatement.setString(1, name)
+      preparedStatement.setInt(2, qty)
+      val resultSet:ResultSet=  preparedStatement.executeQuery()
+      if(resultSet.next()){
+        if (resultSet.getInt("COUNT(*)") ==1) true
+        else false
+      }
+      else false
+
+    }
+    catch {
+      case e:Exception => println(e.getMessage)
+        throw e
+    }
+    /*finally {
+      cleanUp(connection, preparedStatement)
+    }*/
+  }
 
   def getItem(itemName: String):Item = {
-    return null
-  }
+    try {
+      preparedStatement = connection.prepareStatement(getItemByItemName)
+      preparedStatement.setString(1, itemName)
+      val resultSet:ResultSet=  preparedStatement.executeQuery()
+      var item:Item = null
+      if(resultSet.next()) {
+        item = new Item(resultSet.getString("ItemName"),  resultSet.getInt("Price"),  resultSet.getString("ItemCode"))
+        item.setQty(resultSet.getInt("Quantity"))
+      }
+      item
+    }
+    catch {
+      case e:Exception => println(e.getMessage)
+        throw e
+    }
+    /*finally {
+      cleanUp(connection, preparedStatement)
+    }*/
 
-  def getQtyForItem(itemName: String):Int = {
-    0
   }
 
   def isPresent(itemName: String): Boolean = {
-    false
+    try {
+      preparedStatement = connection.prepareStatement(isItemPresent);
+      preparedStatement.setString(1, itemName)
+      val resultSet:ResultSet=  preparedStatement.executeQuery();
+      if(resultSet.next()){
+        if (resultSet.getInt("COUNT(*)") ==1) true
+        else false
+      }
+      else false
+    }
+    catch {
+      case e:Exception => println(e.getMessage)
+        throw e
+    }
+   /* finally {
+      cleanUp(connection, preparedStatement)
+    }*/
   }
-
-  def decreaseItemQty(value: Int) = {
-
-  }
-
-  // returns itemcode of item from itemName
-  def getItemCodeByName(itemName:String): String = {
-    null
-  }
-
 }

@@ -1,4 +1,6 @@
-create database InventoryManagement
+drop database InventoryManagement;
+create database InventoryManagement;
+use InventoryManagement;
 
 CREATE TABLE Customer(
 id varchar(255) PRIMARY KEY,

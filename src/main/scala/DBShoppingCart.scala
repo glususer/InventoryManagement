@@ -12,13 +12,19 @@ import scala.util.Random
 class DBShoppingCart(id: String, customer: Customer) extends ShoppingCart {
   private val customerItemDao = new CustomerItemDao()
 
-  private val itemMap: Map[String, Int] = generateItemMap()
+  private var itemMap =  Map[String, Int]()
 
-  override def isEmpty(): Boolean = (itemMap.isEmpty)
+  override def isEmpty(): Boolean = {
+    itemMap = getItemList()
+    if(itemMap.isEmpty) true
+    else false
+  }
 
   override def getId = this.id
 
-  override def getItemList() = this.itemMap
+  override def getItemList():Map[String, Int]= {
+    customerItemDao.getItemsForCustomer(customer.getName())
+  }
 
   override def getNoOfItemsInCart(): Int = {
     var noOfItems = 0
@@ -31,7 +37,7 @@ class DBShoppingCart(id: String, customer: Customer) extends ShoppingCart {
 
 
   override def addToList(itemName: String, qty: Int) = {
-    if (DBManager.isItemAvailable(itemName, qty)) {
+    if (DBManager.isQtyForItemAvailable(itemName, qty)) {
       val itemQtyAlreadyPresent = getItemQty(itemName)
       if (itemQtyAlreadyPresent > 0)
         customerItemDao.increaseQty(customer.getName(), itemName, qty + itemQtyAlreadyPresent)
@@ -40,7 +46,7 @@ class DBShoppingCart(id: String, customer: Customer) extends ShoppingCart {
 
       DBManager.getItem(itemName, qty)
     }
-    else throw new NoSuchElementException("Ordered " + qty + " pieces but only " + DBManager.inventoryList(itemName).getQty() + " pieces are available")
+    else println(qty +" pieces of "+itemName+" not available")
   }
 
   override def removeFromList(itemName: String, qty: Int) = {
@@ -49,9 +55,5 @@ class DBShoppingCart(id: String, customer: Customer) extends ShoppingCart {
 
   override def toString = s"ShoppingCart($getId, $getItemList)"
 
-  def generateItemMap(): mutable.Map[String, Int] = {
-    customerItemDao.getItemsForCustomer(customer.getName())
-
-  }
 
 }

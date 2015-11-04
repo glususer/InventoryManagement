@@ -17,7 +17,7 @@ object InMemoryManager extends InventoryManager {
   private def createCode(name: String): String = name.concat("_").concat((Random.nextInt(1000)).toString())
 
   override def addToInventory(itemName: String, price: Int, qty: Int, sellerName: String) = Locker.synchronized{
-    if (isItemAvailable(itemName, qty)) {
+    if (isQtyForItemAvailable(itemName, qty)) {
       val item = inventoryList(itemName)
       item.setQty(item.getQty() + qty)
       item.addSellerToList(sellerName)
@@ -39,10 +39,8 @@ object InMemoryManager extends InventoryManager {
   }
 
   override def removeFromInventory(itemName: String, qty: Int) = Locker.synchronized{
-    if (isPresent(itemName)) {
       val item = inventoryList(itemName)
       item.setQty(item.getQty() - qty)
-    }
   }
 
   override def addToInventoryAfterCancellation(itemName: String, qty: Int) = {
@@ -52,7 +50,7 @@ object InMemoryManager extends InventoryManager {
     }
   }
 
-  override def isItemAvailable(itemName: String, requiredQty: Int): Boolean = {
+  override def isQtyForItemAvailable(itemName: String, requiredQty: Int): Boolean = {
     if (isPresent(itemName)) {
       inventoryList(itemName).getQty() >= requiredQty
     } else false
@@ -62,5 +60,11 @@ object InMemoryManager extends InventoryManager {
     val item = inventoryList(name)
     item.setQty(item.getQty() - requiredQty)
     item
+  }
+
+  override def isSellerPresentForItem(itemName:String, sellerName:String):Boolean={
+    val item = inventoryList(itemName)
+    if(item.sellerList.contains(sellerName)) true
+    else false
   }
 }

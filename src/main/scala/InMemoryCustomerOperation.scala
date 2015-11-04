@@ -6,7 +6,7 @@ import scala.util.Random
 /**
  * Created by shivangi on 10/16/15.
  */
-class InMemoryCustomerOperation(customer: Customer) extends CustomerOperation {
+class InMemoryCustomerOperation (customer: Customer) extends CustomerOperation {
 
   val shoppingCart = new InMemoryShoppingCart((Random.nextInt(100)).toString().concat(customer.getName()),customer)
 
@@ -16,7 +16,7 @@ class InMemoryCustomerOperation(customer: Customer) extends CustomerOperation {
     val availableQty = shoppingCart.getItemQty(itemName)
     if (qty <= availableQty)
       shoppingCart.removeFromList(itemName, qty)
-    else throw new NoSuchElementException("Only"+ availableQty +"items can be deleted")
+    else println("Only"+ availableQty +"items can be deleted")
   }
 
 

@@ -26,11 +26,12 @@ class DBCustomerOperation(customer:Customer) extends CustomerOperation {
     val availableQty = shoppingCart.getItemQty(itemName)
     if (qty <= availableQty)
       shoppingCart.removeFromList(itemName, qty)
-    else throw new NoSuchElementException("Only" + availableQty + "items can be deleted")
+    else println("Only" + availableQty + "items can be deleted")
   }
 
   override def viewMenu() = {
-    for ((key, value) <- DBManager.inventoryList) {
+    val inventoryList= DBManager.inventoryList
+    for ((key, value) <- inventoryList) {
       println(key, value.toString)
     }
   }

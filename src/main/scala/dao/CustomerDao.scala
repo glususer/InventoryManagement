@@ -9,8 +9,8 @@ import vo.Customer
  */
 class CustomerDao extends  Dao{
 
-  val selectCustomer = "SELECT id, name, address FROM vo.Customer where name=?"
-  val createCustomer = "INSERT INTO vo.Customer (id, name, address) values (?,?,?)  "
+  private val selectCustomer = "SELECT id, name, address FROM Customer where name=?"
+  private val createCustomer = "INSERT INTO Customer (id, name, address) values (?,?,?)  "
 
   def insertCustomerDetails(customer: Customer) = {
     try {
@@ -25,9 +25,9 @@ class CustomerDao extends  Dao{
         throw e
     }
 
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
   }
 
   def getCustomerByName(name: String): Option[Customer] = {
@@ -45,9 +45,9 @@ class CustomerDao extends  Dao{
       case e:Exception => e.getMessage
         throw e
     }
-    finally {
+    /*finally {
       cleanUp(connection, preparedStatement)
-    }
+    }*/
   }
 
 }
